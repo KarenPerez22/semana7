@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dominio y Rango de una Función</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <h2>Calculadora de Dominio y Rango</h2>
+  <p>Ingresa una función de x, por ejemplo: <code>Math.sqrt(x)</code> o <code>Math.sin(x)</code></p>
+  
+  <input type="text" id="funcion" placeholder="Ej. Math.sqrt(x)" size="30">
+  <button onclick="graficar()">Graficar</button>
+
+  <div id="grafico" style="width:100%;max-width:700px;height:400px;"></div>
+  <p><strong>Dominio aproximado:</strong> <span id="dominio"></span></p>
+  <p><strong>Rango aproximado:</strong> <span id="rango"></span></p>
+
+  <script>
+    function graficar() {
+      const expr = document.getElementById("funcion").value;
+      let x = [], y = [];
+
+      for (let i = -100; i <= 100; i += 0.1) {
+        try {
+          let xi = i;
+          let yi = eval(expr);
+          if (isFinite(yi)) {
+            x.push(xi);
+            y.push(yi);
+          }
+        } catch (e) {
+          // Salta valores inválidos
+        }
+      }
+
+      Plotly.newPlot("grafico", [{
+        x: x,
+        y: y,
+        mode: "lines",
+        name: expr
+      }], {
+        title: "Gráfica de la función",
+        xaxis: { title: "x" },
+        yaxis: { title: "f(x)" }
+      });
+
+      // Mostrar dominio y rango aproximados
+      if (x.length > 0 && y.length > 0) {
+        document.getElementById("dominio").innerText = `[${x[0].toFixed(2)}, ${x[x.length - 1].toFixed(2)}]`;
+        let ymin = Math.min(...y).toFixed(2);
+        let ymax = Math.max(...y).toFixed(2);
+        document.getElementById("rango").innerText = `[${ymin}, ${ymax}]`;
+      } else {
+        document.getElementById("dominio").innerText = "No definido";
+        document.getElementById("rango").innerText = "No definido";
+      }
+    }
+  </script>
+</body>
+</html>
