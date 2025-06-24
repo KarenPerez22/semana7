@@ -64,3 +64,71 @@
   </script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dominio y Rango de una Función</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <h1>Calculadora: Dominio y Rango</h1>
+
+  <p>Escribe tu función en JavaScript (usa <code>Math.</code> para funciones matemáticas):</p>
+  <input type="text" id="funcion" value="Math.sqrt(x)" size="40">
+  <button onclick="graficar()">Graficar función</button>
+
+  <div id="grafico" style="width:90%; max-width:800px; height:400px; margin-top:20px;"></div>
+
+  <p><strong>Dominio estimado:</strong> <span id="dominio"></span></p>
+  <p><strong>Rango estimado:</strong> <span id="rango"></span></p>
+
+  <script>
+    function graficar() {
+      const expresion = document.getElementById("funcion").value;
+      const x = [], y = [];
+
+      for (let i = -100; i <= 100; i += 0.1) {
+        let xi = i;
+        try {
+          let yi = eval(expresion); // Evaluar f(x)
+          if (isFinite(yi)) {
+            x.push(xi);
+            y.push(yi);
+          }
+        } catch (e) {
+          // Ignora errores (como raíz negativa, división por 0, etc.)
+        }
+      }
+
+      if (x.length === 0 || y.length === 0) {
+        alert("No se pudo graficar la función. Verifica que esté correctamente escrita.");
+        return;
+      }
+
+      // Graficar con Plotly
+      Plotly.newPlot("grafico", [{
+        x: x,
+        y: y,
+        mode: "lines",
+        line: { color: "blue" },
+        name: "f(x)"
+      }], {
+        title: "Gráfica de la función",
+        xaxis: { title: "x" },
+        yaxis: { title: "f(x)" }
+      });
+
+      // Dominio y Rango estimados
+      const dominio = `[${x[0].toFixed(2)} , ${x[x.length - 1].toFixed(2)}]`;
+      const ymin = Math.min(...y).toFixed(2);
+      const ymax = Math.max(...y).toFixed(2);
+      const rango = `[${ymin} , ${ymax}]`;
+
+      document.getElementById("dominio").innerText = dominio;
+      document.getElementById("rango").innerText = rango;
+    }
+  </script>
+</body>
+</html>
